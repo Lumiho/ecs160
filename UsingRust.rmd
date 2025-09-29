@@ -1,2 +1,11 @@
-# rustc [file] -- to compile single file. then run executable
-# Initializing cargo: cargo new github_fetch, cd github_fetch
+# Notes
+`rustc [file]` -- to compile single file. then run executable
+# Initializing cargo: 
+`cargo new [project_name]`
+`cd [project_name]`
+## Commands for build and run: 
+`cargo build`
+`cargo run`
+# Version Checking
+`rustc --version`
+`cargo --version`
