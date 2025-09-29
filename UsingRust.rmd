@@ -1,0 +1,2 @@
+# rustc [file] -- to compile single file. then run executable
+# Initializing cargo: cargo new github_fetch, cd github_fetch
