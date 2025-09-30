@@ -1,3 +1,6 @@
+use dotenv::dotenv; // for token
+
+
 fn main() 
 {
     println!("Hello, world!");

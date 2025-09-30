@@ -1,5 +1,6 @@
 # Notes
 `rustc [file]` -- to compile single file. then run executable
+Statically typed
 # Initializing cargo: 
 `cargo new [project_name]`
 `cd [project_name]`
