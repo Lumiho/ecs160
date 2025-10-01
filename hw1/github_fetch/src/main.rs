@@ -10,7 +10,7 @@ const URL_JAVA: &str = "https://api.github.com/search/repositories?q=language:Ja
 const URL_RUST: &str = "https://api.github.com/search/repositories?q=language:Rust&sort=stars&order=desc&per_page=10";
 
 // gets top 10 listings
-fn get_top10(url: &str)
+async fn get_top10(url: &str)
 {    
     let token = std::env::var("GITHUB_TOKEN").expect("Expected GITHUB token in .env"); // expect throws error if it doesn't work
     let client = reqwest::Client::new(); // create reqwest client
