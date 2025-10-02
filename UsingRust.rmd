@@ -10,3 +10,6 @@ Statically typed
 # Version Checking
 `rustc --version`
 `cargo --version`
+
+# fxns
+format!("text") -- returns a string that you can store, format etc. Not needed for constants
