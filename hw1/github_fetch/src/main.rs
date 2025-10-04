@@ -17,14 +17,26 @@ async fn main()
 {
     dotenv().ok();
     let github_client = GithubClient::new();
+    let urls = [URL_C, URL_CPP, URL_JAVA, URL_RUST];
 
-    match github_client.get_top10(URL_RUST).await {
-        Ok(repo_data) => {
-            match to_string_pretty(&repo_data) {
-                Ok(json) => println!("{}", json),
-                Err(e) => eprintln!("Error serializing json: {}", e)
+    for url in urls
+    {
+        let repo_result = github_client.get_top10(url).await;
+        
+        match repo_result 
+        {
+            Ok(repo_api_call) => 
+            {
+                match to_string_pretty(&repo_api_call) 
+                {
+                    Ok(json_string) => println!("{}", json_string),
+                    Err(e) => eprintln!("Error serializing json: {}", e)
+                }
+            }
+            Err(e) => 
+            {
+                eprintln!("Error fetching repository data: {}", e);
             }
         }
-        Err(e) => eprintln!("Error fetching repository data: {}", e),
     }
 }

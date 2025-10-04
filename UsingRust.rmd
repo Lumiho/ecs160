@@ -5,8 +5,9 @@ Statically typed
 `cargo new [project_name]`
 `cd [project_name]`
 ## Commands for build and run: 
-`cargo build`
-`cargo run`
+`cargo build` -- Compiles code
+`cargo check` -- Compiles code enough to verify syntax and semantics; faster than build
+`cargo run` -- builds and then runs
 # Version Checking
 `rustc --version`
 `cargo --version`
