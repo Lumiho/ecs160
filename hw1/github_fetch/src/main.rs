@@ -27,11 +27,13 @@ async fn main()
         {
             Ok(repo_api_call) => 
             {
+                github_client.get_commit_count(&repo_api_call).await;
                 match to_string_pretty(&repo_api_call) 
                 {
                     Ok(json_string) => println!("{}", json_string),
                     Err(e) => eprintln!("Error serializing json: {}", e)
                 }
+                println!()
             }
             Err(e) => 
             {

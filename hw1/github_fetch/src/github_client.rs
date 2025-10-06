@@ -3,7 +3,6 @@ use reqwest::{Client, Response};
 use reqwest::header::{ACCEPT, AUTHORIZATION, USER_AGENT};
 use serde::{Deserialize, Serialize};
 
-
 pub struct GithubClient 
 {
     client: Client,
@@ -40,6 +39,17 @@ impl GithubClient {
         let repo_api_response = self.call_github_api(url).await?;
         let repo_data = repo_api_response.json::<TopLevelApiCall>().await?;
         Ok(repo_data)
+    }
+
+    // commit api endpoint: "https://api.github.com/{}/{}/rust/commits?per_page=1"
+    pub async fn get_commit_count(&self, top_level_json: &TopLevelApiCall) {
+        // From TopLevelApiCall. We need TempRepo.name. TempRepo.Owner.login
+        // Hardcode url and format with the data types above
+        let repo_data = top_level_json;
+        for (i, repo) in repo_data.items.iter().enumerate() {
+            println!("{}. Name: {}, Owner name: {}", i + 1, repo.name, repo.owner.login);
+        }
+
     }
 }
 
