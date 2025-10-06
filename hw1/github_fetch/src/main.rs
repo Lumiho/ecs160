@@ -13,9 +13,8 @@ const URL_CPP: &str = "https://api.github.com/search/repositories?q=language:C%2
 const URL_JAVA: &str = "https://api.github.com/search/repositories?q=language:Java&sort=stars&order=desc&per_page=10";
 const URL_RUST: &str = "https://api.github.com/search/repositories?q=language:Rust&sort=stars&order=desc&per_page=10";
 
-// commit count
-URL_COMMIT: &str = "https://api.github.com/repos/{OWNER}/{REPO}/commits?per_page=1"
-
+// // commit count
+// URL_COMMIT: &str = "https://api.github.com/repos/{OWNER}/{REPO}/commits?per_page=1"
 
 #[tokio::main]
 async fn main()

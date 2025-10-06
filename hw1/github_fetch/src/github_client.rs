@@ -109,23 +109,16 @@ pub struct Commit
 pub struct Issue 
 {
     title: String,
-    body: <Option>String,
+    body: Option<String>,
     state: String,
-    createdAt: String,
-    updatedAt: String
+    createdat: String,
+    updatedat: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Author
 {
     name: String,
     email: String,
     date: String
-}
-
-pub struct Owner
-{
-    login: String,
-    id: u64,
-    html_url: String,
-    site_admin: bool
 }
