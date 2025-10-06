@@ -7,10 +7,15 @@ use serde_json::{to_string_pretty};
 // 'cargo add reqwest -F json' -- dependency needed to use reqwest and work with json data
 // https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api?apiVersion=2022-11-28#http-method
 
+// search api links
 const URL_C: &str = "https://api.github.com/search/repositories?q=language:C&sort=stars&order=desc&per_page=10";
 const URL_CPP: &str = "https://api.github.com/search/repositories?q=language:C%2B%2B&sort=stars&order=desc&per_page=10";
 const URL_JAVA: &str = "https://api.github.com/search/repositories?q=language:Java&sort=stars&order=desc&per_page=10";
 const URL_RUST: &str = "https://api.github.com/search/repositories?q=language:Rust&sort=stars&order=desc&per_page=10";
+
+// commit count
+URL_COMMIT: &str = "https://api.github.com/repos/{OWNER}/{REPO}/commits?per_page=1"
+
 
 #[tokio::main]
 async fn main()

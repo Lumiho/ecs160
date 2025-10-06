@@ -70,7 +70,7 @@ pub struct TempRepo
     forks_count: u32,
     language: String,
     open_issues_count: u32,
-    forks_url: String, // Get the url for now
+    forks_url: String, // Get the url for now, vectors later
     commits_url: String,
     issues_url: String,
 }
@@ -92,6 +92,47 @@ pub struct FullRepo
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Owner 
+{
+    login: String,
+    id: u64,
+    html_url: String,
+    site_admin: bool
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Fork 
+{
+    full_name: String,
+    html_url: String, // of the fork
+    owner: Owner
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Commit 
+{
+    sha: String,
+    message: String,
+    author: Author
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Issue 
+{
+    title: String,
+    body: <Option>String,
+    state: String,
+    createdAt: String,
+    updatedAt: String
+}
+
+pub struct Author
+{
+    name: String,
+    email: String,
+    date: String
+}
+
+pub struct Owner
 {
     login: String,
     id: u64,
