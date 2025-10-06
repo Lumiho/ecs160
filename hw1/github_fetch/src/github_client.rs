@@ -1,4 +1,8 @@
-use reqwest::{Client, Response};
+// Useful HTTP Methods from reqwest
+// Method::GET
+// Method::HEAD
+use reqwest::{Client, Response, Method};
+
 // for token. do 'cargo add dotenv' in terminal to add it as a dependency
 use reqwest::header::{ACCEPT, AUTHORIZATION, USER_AGENT};
 use serde::{Deserialize, Serialize};
@@ -19,10 +23,10 @@ impl GithubClient {
         }
     }
 
-    async fn call_github_api(&self, url: &str) -> Result<Response, reqwest::Error> 
+    async fn call_github_api(&self, url: &str, method: Method) -> Result<Response, reqwest::Error>
     {
         let response = self.client
-            .get(url)
+            .request(method, url)
             // HEADERS. GitHub always requires user agent (can be whatever). AUTHORIZATION -- uncaps requests/hour
             .header(AUTHORIZATION, format!("Bearer {}", self.token))
             .header(USER_AGENT, "github-api")
@@ -36,7 +40,7 @@ impl GithubClient {
     // gets top 10 listings for each language
     pub async fn get_top10(&self, url: &str) -> Result<TopLevelApiCall, reqwest::Error> 
     {
-        let repo_api_response = self.call_github_api(url).await?;
+        let repo_api_response = self.call_github_api(url, Method::GET).await?;
         let repo_data = repo_api_response.json::<TopLevelApiCall>().await?;
         Ok(repo_data)
     }
@@ -46,10 +50,12 @@ impl GithubClient {
         // From TopLevelApiCall. We need TempRepo.name. TempRepo.Owner.login
         // Hardcode url and format with the data types above
         let repo_data = top_level_json;
-        for (i, repo) in repo_data.items.iter().enumerate() {
-            println!("{}. Name: {}, Owner name: {}", i + 1, repo.name, repo.owner.login);
-        }
 
+        for (i, repo) in repo_data.items.iter().enumerate() {
+            let commit_url = format!("https://api.github.com/{}/{}/rust/commits?per_page=1", repo.owner.login, repo.name);
+            let header_data = self.call_github_api(&commit_url, Method::HEAD);
+            //println!("{}. Name: {}, Owner name: {}", i + 1, repo.name, repo.owner.login);
+        }
     }
 }
 
@@ -91,15 +97,6 @@ pub struct FullRepo
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Owner 
-{
-    login: String,
-    id: u64,
-    html_url: String,
-    site_admin: bool
-}
-
-#[derive(Serialize, Deserialize, Debug)]
 pub struct Fork 
 {
     full_name: String,
@@ -119,12 +116,13 @@ pub struct Commit
 pub struct Issue 
 {
     title: String,
-    body: <Option>String,
+    body: Option<String>,
     state: String,
     createdAt: String,
     updatedAt: String
 }
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Author
 {
     name: String,
@@ -132,6 +130,7 @@ pub struct Author
     date: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Owner
 {
     login: String,

@@ -2,6 +2,7 @@ mod github_client;
 use crate::github_client::GithubClient;
 use dotenv::dotenv;
 use serde_json::{to_string_pretty};
+use reqwest::{Method};
 
 // Also, create your own .env file with your GitHub token in it; not to be shared
 // 'cargo add reqwest -F json' -- dependency needed to use reqwest and work with json data
@@ -14,7 +15,7 @@ const URL_JAVA: &str = "https://api.github.com/search/repositories?q=language:Ja
 const URL_RUST: &str = "https://api.github.com/search/repositories?q=language:Rust&sort=stars&order=desc&per_page=10";
 
 // commit count
-URL_COMMIT: &str = "https://api.github.com/repos/{OWNER}/{REPO}/commits?per_page=1"
+//URL_COMMIT: &str = "https://api.github.com/repos/{OWNER}/{REPO}/commits?per_page=1"
 
 
 #[tokio::main]
@@ -32,7 +33,6 @@ async fn main()
         {
             Ok(repo_api_call) => 
             {
-                github_client.get_commit_count(&repo_api_call).await;
                 match to_string_pretty(&repo_api_call) 
                 {
                     Ok(json_string) => println!("{}", json_string),
