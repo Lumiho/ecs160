@@ -33,6 +33,13 @@ async fn main()
         {
             Ok(repo_api_call) => 
             {
+                let commit_counts = github_client.get_commit_count(&repo_api_call).await;
+                println!("==================================================================================");
+                println!("Commit counts:");
+                println!("{:?}", commit_counts);
+                println!();
+                println!("Repository Data:");
+
                 match to_string_pretty(&repo_api_call) 
                 {
                     Ok(json_string) => println!("{}", json_string),
