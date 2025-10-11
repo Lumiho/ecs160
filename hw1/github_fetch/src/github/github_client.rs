@@ -27,13 +27,12 @@ impl GithubClient {
     {
         let response = self.client
             .request(method, url)
-            // HEADERS. GitHub always requires user agent (can be whatever). AUTHORIZATION -- uncaps requests/hour
+            // HEADERS. GitHub requires user agent (can be whatever). AUTHORIZATION -- uncaps requests/hour
             .header(AUTHORIZATION, format!("Bearer {}", self.token))
             .header(USER_AGENT, "github-api")
             .header(ACCEPT, "application/vnd.github+json")
             .send()
             .await;
-
         response
     }
 
