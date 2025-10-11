@@ -45,3 +45,30 @@ async fn main()
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::github::github_client::{GithubClient};
+
+    #[tokio::test]
+    async fn test_github_client_call() {
+        dotenv().ok();
+        let github_client = GithubClient::new();
+
+        // Testing Rust URL
+        let repo_result = github_client.get_top10("https://api.github.com/search/repositories?q=language:Rust&sort=stars&order=desc&per_page=10").await;
+
+        match repo_result {
+            Ok(repo_api_call) => {
+                println!("Successfully fetched repo data");
+                println!("{}", repo_api_call);
+            }
+            Err(e) => {
+                eprintln!("Error fetching repository data: {}", e);
+                panic!("Failed to fetch from GitHub API");
+            }
+        }
+    }
+}
+
