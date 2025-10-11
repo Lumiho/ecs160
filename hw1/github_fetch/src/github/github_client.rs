@@ -38,10 +38,11 @@ impl GithubClient {
     }
 
     // gets top 10 listings for each language
-    pub async fn get_top10(&self, url: &str) -> Result<TopLevelApiCall, reqwest::Error> 
+    pub async fn get_top10(&self, url: &str) -> Result<TopLevelApiCall, reqwest::Error>
     {
         let repo_api_response = self.call_github_api(url, Method::GET).await?;
         let repo_data = repo_api_response.json::<TopLevelApiCall>().await?;
+        //let repo_json = repo_api_response.text().await?;
         Ok(repo_data)
     }
 
@@ -111,15 +112,15 @@ pub struct TopLevelApiCall
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TempRepo 
 {
-    name: String,
-    owner: Owner,
-    html_url: String,
-    forks_count: u32,
-    language: String,
-    open_issues_count: u32,
-    forks_url: String, // Get the url for now, vectors later
-    commits_url: String,
-    issues_url: String,
+    pub(super) name: String,
+    pub(super) owner: Owner,
+    pub(super) html_url: String,
+    pub(super) forks_count: u32,
+    pub(super) language: String,
+    pub(super) open_issues_count: u32,
+    pub(super) forks_url: String, // Get the url for now, vectors later
+    pub(super) commits_url: String,
+    pub(super) issues_url: String,
 }
 
 // We will construct this FullRepo from TempRepo and an api call to get the commit count
@@ -174,8 +175,8 @@ pub struct Author
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Owner
 {
-    login: String,
-    id: u64,
-    html_url: String,
-    site_admin: bool
+    pub(super) login: String,
+    pub(super) id: u64,
+    pub(super) html_url: String,
+    pub(super) site_admin: bool
 }

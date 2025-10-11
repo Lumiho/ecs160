@@ -1,8 +1,7 @@
-mod github_client;
-use crate::github_client::GithubClient;
+mod github;
+use github::github_client::GithubClient;
 use dotenv::dotenv;
 use serde_json::{to_string_pretty};
-use reqwest::{Method};
 
 // Also, create your own .env file with your GitHub token in it; not to be shared
 // 'cargo add reqwest -F json' -- dependency needed to use reqwest and work with json data
@@ -28,29 +27,21 @@ async fn main()
     for url in urls
     {
         let repo_result = github_client.get_top10(url).await;
-        
-        match repo_result 
-        {
-            Ok(repo_api_call) => 
-            {
-                let commit_counts = github_client.get_commit_count(&repo_api_call).await;
-                println!("==================================================================================");
-                println!("Commit counts:");
-                println!("{:?}", commit_counts);
-                println!();
-                println!("Repository Data:");
 
-                match to_string_pretty(&repo_api_call) 
+        match repo_result
+        {
+            Ok(repo_api_call) =>
                 {
-                    Ok(json_string) => println!("{}", json_string),
-                    Err(e) => eprintln!("Error serializing json: {}", e)
+                    match to_string_pretty(&repo_api_call)
+                    {
+                        Ok(json_string) => println!("{}", json_string),
+                        Err(e) => eprintln!("Error serializing json: {}", e)
+                    }
                 }
-                println!()
-            }
-            Err(e) => 
-            {
-                eprintln!("Error fetching repository data: {}", e);
-            }
+            Err(e) =>
+                {
+                    eprintln!("Error fetching repository data: {}", e);
+                }
         }
     }
 }
