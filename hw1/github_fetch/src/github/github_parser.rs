@@ -24,6 +24,23 @@ fn get_values(json: &str, key: &str) -> Option<String> {
     None
 }
 
+fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
+    let pattern = format!("\"{}\":", key);
+    if let Some(start_idx) = json.find(&pattern)
+    {
+        if let Some(open_brace_idx) = json[start_idx..].find("{")
+        {
+            if let Some(closing_brace_idx) = json[start_idx + open_brace_idx + 1..].find(("}"))
+                {
+                    let start = start_idx + open_brace_idx + 1;
+                    let end = start_idx + open_brace_idx + closing_brace_idx + 1;
+                    return Some(&json[start..end]);
+                }
+        }
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -62,5 +79,43 @@ mod tests {
         println!("forks_count = {:?}", forks);
         println!("archived = {:?}", archived);
     }
+
+    #[test]
+    fn test_get_nested_block() {
+        let json = r#"{
+        "name": "linux",
+        "owner": {
+            "login": "torvalds",
+            "id": 1024025,
+            "html_url": "https://github.com/torvalds",
+            "site_admin": false
+        }
+    }"#;
+
+        let owner_block = get_nested_block(json, "owner").unwrap();
+
+        let expected = r#""login": "torvalds",
+                            "id": 1024025,
+                            "html_url": "https://github.com/torvalds",
+                            "site_admin": false"#;
+
+        let clean = |s: &str| s.chars().filter(|c| !c.is_whitespace()).collect::<String>();
+
+        // format both strings for consistent formatting (just for debug output). not the neatest to read, but it works.
+        let actual_clean = clean(owner_block);
+        let expected_clean = clean(expected);
+
+        println!("--- Extracted ---\n{}\n", actual_clean);
+        println!("--- Expected ---\n{}\n", expected_clean);
+
+        // println!("--- Extracted ---\n{}\n", owner_block);
+        // println!("--- Expected ---\n{}\n", expected);
+
+        if actual_clean != expected_clean {
+            eprintln!("Owner block mismatch:\n");
+            panic!("Owner block did not match expected output");
+        }
+    }
 }
+
 

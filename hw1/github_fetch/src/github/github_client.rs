@@ -37,11 +37,11 @@ impl GithubClient {
     }
 
     // gets top 10 listings for each language
-    pub async fn get_top10(&self, url: &str) -> Result<String, reqwest::Error>
+    pub async fn get_top10(&self, url: &str) -> Result<TopLevelApiCall, reqwest::Error>
     {
         let repo_api_response = self.call_github_api(url, Method::GET).await?;
-        //let repo_data = repo_api_response.json::<TopLevelApiCall>().await?;
-        let repo_data = repo_api_response.text().await?;
+        let repo_data = repo_api_response.json::<TopLevelApiCall>().await?;
+        //let repo_data = repo_api_response.text().await?;
         Ok(repo_data)
     }
 
