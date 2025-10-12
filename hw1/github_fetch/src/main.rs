@@ -2,7 +2,6 @@
 mod github;
 use github::github_client::GithubClient;
 use dotenv::dotenv;
-use serde_json::to_string_pretty;
 
 
 // Also, create your own .env file with your GitHub token in it; not to be shared
@@ -32,13 +31,9 @@ async fn main()
 
         match repo_result
         {
-            Ok(repo_api_call) =>
-                {
-                    match to_string_pretty(&repo_api_call)
-                    {
-                        Ok(json_string) => println!("{}", json_string),
-                        Err(e) => eprintln!("Error serializing json: {}", e)
-                    }
+            Ok(temp_repos) =>
+                for (i, temp_repo) in temp_repos.iter().enumerate() {
+                    println!("Repository {}: {:#?}", i + 1, temp_repo);
                 }
             Err(e) =>
                 {
@@ -52,7 +47,7 @@ async fn main()
 mod tests 
 {
     use super::*;
-    use crate::github::{get_values};
+    use crate::github::github_parser::get_values;
     #[test]
     fn analyze_output()
     {
