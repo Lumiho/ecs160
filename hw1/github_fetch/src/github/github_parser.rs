@@ -1,4 +1,4 @@
-fn get_values(json: &str, key: &str) -> Option<String> {
+pub fn get_values(json: &str, key: &str) -> Option<String> {
     let pattern = format!("\"{}\":", key);
     if let Some(start_index) = json.find(&pattern)
     {
@@ -24,13 +24,13 @@ fn get_values(json: &str, key: &str) -> Option<String> {
     None
 }
 
-fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
+pub fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{}\":", key);
     if let Some(start_idx) = json.find(&pattern)
     {
         if let Some(open_brace_idx) = json[start_idx..].find("{")
         {
-            if let Some(closing_brace_idx) = json[start_idx + open_brace_idx + 1..].find(("}"))
+            if let Some(closing_brace_idx) = json[start_idx + open_brace_idx + 1..].find("}")
             {
                     let start = start_idx + open_brace_idx + 1;
                     let end = start_idx + open_brace_idx + closing_brace_idx + 1;
@@ -46,7 +46,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_get_values() {
+    fn test_get_values() 
+    {
         let json = r#"
         {
             "name": "rustlings",
@@ -81,7 +82,8 @@ mod tests {
     }
 
     #[test]
-    fn test_get_nested_block() {
+    fn test_get_nested_block() 
+    {
         let json = r#"{
         "name": "linux",
         "owner": {

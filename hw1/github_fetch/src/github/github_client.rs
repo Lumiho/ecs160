@@ -51,7 +51,7 @@ impl GithubClient {
         let repo_data = top_level_json;
         let mut commit_count: Vec<u32> = Vec::new();
 
-        for (i, repo) in repo_data.items.iter().enumerate() {
+        for (_i, repo) in repo_data.items.iter().enumerate() {
             let commit_url = format!("https://api.github.com/repos/{}/{}/commits?per_page=1", repo.owner.login, repo.name);
             let header_data = self.call_github_api(&commit_url, Method::HEAD).await;
 
