@@ -24,6 +24,7 @@ fn get_values(json: &str, key: &str) -> Option<String> {
     None
 }
 
+
 fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{}\":", key);
     if let Some(start_idx) = json.find(&pattern)
