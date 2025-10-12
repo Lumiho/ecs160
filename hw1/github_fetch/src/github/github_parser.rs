@@ -24,7 +24,6 @@ fn get_values(json: &str, key: &str) -> Option<String> {
     None
 }
 
-
 fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{}\":", key);
     if let Some(start_idx) = json.find(&pattern)
@@ -32,11 +31,11 @@ fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
         if let Some(open_brace_idx) = json[start_idx..].find("{")
         {
             if let Some(closing_brace_idx) = json[start_idx + open_brace_idx + 1..].find(("}"))
-                {
+            {
                     let start = start_idx + open_brace_idx + 1;
                     let end = start_idx + open_brace_idx + closing_brace_idx + 1;
                     return Some(&json[start..end]);
-                }
+            }
         }
     }
     None
@@ -100,9 +99,8 @@ mod tests {
                             "html_url": "https://github.com/torvalds",
                             "site_admin": false"#;
 
-        let clean = |s: &str| s.chars().filter(|c| !c.is_whitespace()).collect::<String>();
-
         // format both strings for consistent formatting (just for debug output). not the neatest to read, but it works.
+        let clean = |s: &str| s.chars().filter(|c| !c.is_whitespace()).collect::<String>();
         let actual_clean = clean(owner_block);
         let expected_clean = clean(expected);
 
