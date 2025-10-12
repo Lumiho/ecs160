@@ -24,18 +24,14 @@ async fn main()
     let github_client = GithubClient::new();
     let urls = [URL_C, URL_CPP, URL_JAVA, URL_RUST];
 
-    for url in urls
-    {
+    for url in urls {
         let repo_result = github_client.get_top10(url).await;
-
         match repo_result
         {
-            Ok(repo_api_call) =>
+            Ok(temp_repos) =>
                 {
-                    match to_string_pretty(&repo_api_call)
-                    {
-                        Ok(json_string) => println!("{}", json_string),
-                        Err(e) => eprintln!("Error serializing json: {}", e)
+                    for (i, repo) in temp_repos.iter().enumerate() {
+                        println!("Repo: {}, {:#?}", i + 1, repo);
                     }
                 }
             Err(e) =>
@@ -44,10 +40,5 @@ async fn main()
                 }
         }
     }
-}
-
-#[cfg(test)]
-mod tests {
-
 }
 

@@ -1,0 +1,80 @@
+#[derive(Debug)]
+pub struct TopLevelApiCall
+{
+    items: Vec<TempRepo>
+}
+
+// We need a separate api call to obtain the commit count
+// We'll store what we can from the /search/repositories endpoint here
+#[derive(Debug)]
+pub struct TempRepo
+{
+    pub name: String,
+    pub owner: Owner,
+    pub html_url: String,
+    pub forks_count: u32,
+    pub language: String,
+    pub open_issues_count: u32,
+    pub forks_url: String, // Get the url for now, vectors later
+    pub commits_url: String,
+    pub issues_url: String,
+}
+
+// We will construct this FullRepo from TempRepo and an api call to get the commit count
+#[derive(Debug)]
+pub struct FullRepo
+{
+    name: String,
+    owner: Owner,
+    html_url: String,
+    forks_count: u32,
+    language: String,
+    open_issues_count: u32,
+    forks_url: String, // For now, get the urls. We will make a list later.
+    commits_url: String,
+    issues_url: String,
+    commit_count: u32
+}
+
+#[derive(Debug)]
+pub struct Fork
+{
+    full_name: String,
+    html_url: String, // of the fork
+    owner: Owner
+}
+
+#[derive(Debug)]
+pub struct Commit
+{
+    sha: String,
+    message: String,
+    author: Author
+}
+
+#[derive(Debug)]
+pub struct Issue
+{
+    title: String,
+    body: Option<String>,
+    state: String,
+    createdAt: String,
+    updatedAt: String
+}
+
+#[derive(Debug)]
+pub struct Author
+{
+    name: String,
+    email: String,
+    date: String
+}
+
+#[derive(Debug)]
+pub struct Owner
+{
+    pub login: String,
+    pub id: u64,
+    pub html_url: String,
+    pub site_admin: bool
+}
