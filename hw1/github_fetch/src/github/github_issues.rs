@@ -64,7 +64,10 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
 pub async fn attach_issues(client: &GithubClient, repo: &mut TempRepo) -> Result<(), reqwest::Error>
 {
     let issues_url = repo.issues_url.replace("{/number}", "");
-    let issues_json = client.call_github_api(&issues_url, Method::GET).await?.text().await?;
+    let issues_json = client
+        .call_github_api(&issues_url, Method::GET)
+        .await?
+        .text().await?;
     let issues = build_issues(&issues_json);
     repo.issues = Some(issues);
     Ok(())
