@@ -44,8 +44,19 @@ impl GithubClient {
         let repo_api_response = self.call_github_api(url, Method::GET).await?;
         let repo_data = repo_api_response.text().await?;
         let temp_repos = build_temp_repo(&repo_data);
-        //let repo_data = repo_api_response.text().await?;
+        for temp_repo in &temp_repos{
+            let commit_url = temp_repo.commits_url.replace("{/sha}", "?per_page=1");
+            let commit_result = self.get_commits(&commit_url).await;
+            println!("Commits: {:?}", commit_result)
+        }
         Ok(temp_repos)
+    }
+
+    pub async fn get_commits(&self, url: &str) -> Result<String, reqwest::Error>
+    {
+        let commit_api_response = self.call_github_api(url, Method::GET).await?;
+        let commit_data = commit_api_response.text().await?;
+        Ok(commit_data)
     }
 
     // commit api endpoint: "https://api.github.com/{}/{}/rust/commits?per_page=1"
