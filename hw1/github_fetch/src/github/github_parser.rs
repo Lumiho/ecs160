@@ -9,7 +9,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
     // }
     // println!("End Debug Print =================================================================================");
 
-    // array of TempRepos to build
+    // arr of TempRepos to build
     let mut temp_repos: Vec<TempRepo> = Vec::new();
 
     for item in items {
@@ -60,7 +60,6 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
 
         temp_repos.push(built_temp_repo);
     }
-
     temp_repos
 }
 

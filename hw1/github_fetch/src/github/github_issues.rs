@@ -2,7 +2,7 @@ use crate::github::github_models::Issue;
 
 // no serde 😒😒😒. Only need title, body, state, created/updated_at for hw1
 #[derive(Debug, Clone)]
-pub struct Issue 
+pub struct Issue
 {
     pub title: String,
     pub body: Option<String>,
@@ -22,14 +22,14 @@ pub struct Issue
 //     pub html_url: Option<String>,
 // }
 
-pub fn issue_builder(json: &str) -> Vec<Issue> 
+pub fn issue_builder(json: &str) -> Vec<Issue>
 {
     let mut issues: Vec<Issue> = Vec::new();
 
     // Split into top-level objects in the JSON array
     let items = parse_items(json);
 
-    for item in items 
+    for item in items
     {
         let title = get_values(item, "title");
         let body = get_values(item, "body");
@@ -42,7 +42,7 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
 
         let issue = Issue
         {
-            title: title.unwrap_or_else(|| "Untitled".to_string()), 
+            title: title.unwrap_or_else(|| "Untitled".to_string()),
             body,
             state: state.unwrap_or_else(|| "unknown".to_string()),
             created_at: created_at.unwrap_or_default(),
@@ -57,7 +57,7 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
             // })
         };
         issues.push(issue);
-    } 
+    }
     issues
 }
 

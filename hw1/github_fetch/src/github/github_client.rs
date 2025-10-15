@@ -73,6 +73,7 @@ impl GithubClient {
         let commit_url = format!("https://api.github.com/repos/{}/{}/commits?per_page=1", owner, repo);
         let header_resp = self.call_github_api(&commit_url, Method::HEAD).await;
 
+
         match header_resp {
             Ok(response) => {
                 if let Some(link_header) = response.headers().get(LINK) {
@@ -91,10 +92,18 @@ impl GithubClient {
                             // extract the part with "page=###"
                             if let Some(start) = part.find("page=") {
                                 let slice = &part[start + 5..];
+
                                 if let Some(end) = slice.find('>') {
-                                    if let Ok(count) = slice[..end].parse::<u32>() {
-                                        commit_count = Some(count);
-                                        break;
+                                    let count_slice = &slice[..end].split("=").nth(1);
+
+                                    match  count_slice {
+                                        Some(count_string) => {
+                                            match count_string.parse::<u32>() {
+                                                Ok(count) => commit_count = Some(count),
+                                                Err(e) => eprintln!("Error converting count to u32: {}", e),
+                                            }
+                                        }
+                                        None => println!("Error: '=' not found for {}", part)
                                     }
                                 }
                             }
@@ -166,3 +175,13 @@ impl GithubClient {
                     // commit_count.extend(commit_count_strings.iter().map(|s| s.parse::<u32>().unwrap()));
             //     }
             // }
+
+#[cfg(test)]
+mod tests
+{
+    // tests the get_commit_count() function against sample_header_data.json
+    #[test]
+    fn test_get_commit_count() {
+
+    }
+}
