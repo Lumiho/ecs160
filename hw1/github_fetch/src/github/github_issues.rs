@@ -2,7 +2,7 @@ use crate::github::github_models::Issue;
 
 // no serde 😒😒😒
 #[derive(Debug, Clone)]
-pub struct Issue 
+pub struct Issue
 {
     pub title: String,
     pub body: Option<String>,
@@ -15,21 +15,21 @@ pub struct Issue
 }
 
 #[derive(Debug, Clone)]
-pub struct IssueUser 
+pub struct IssueUser
 {
     pub login: String,
     pub id: u64,
     pub html_url: Option<String>,
 }
 
-pub fn issue_builder(json: &str) -> Vec<Issue> 
+pub fn issue_builder(json: &str) -> Vec<Issue>
 {
     let mut issues: Vec<Issue> = Vec::new();
 
     // Split into top-level objects in the JSON array
     let items = parse_items(json);
 
-    for item in items 
+    for item in items
     {
         let title = get_values(item, "title");
         let body = get_values(item, "body");
@@ -44,7 +44,7 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
         let mut user_id = None;
         let mut user_url = None;
 
-        if let Some(block) = user_block 
+        if let Some(block) = user_block
         {
             user_login = get_values(block, "login");
             user_id = get_values(block, "id");
@@ -53,7 +53,7 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
 
         let issue = Issue
         {
-            title: title.unwrap_or_else(|| "Untitled".to_string()), 
+            title: title.unwrap_or_else(|| "Untitled".to_string()),
             body,
             state: state.unwrap_or_else(|| "unknown".to_string()),
             created_at: created_at.unwrap_or_default(),
@@ -61,14 +61,14 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
             html_url,
             number: number.and_then(|n| n.parse::<u32>().ok()),
             user: Some(crate::github::github_models::IssueUser //only created if user block exists
-            { 
+            {
                 login: user_login.unwrap_or_else(|| "unknown".to_string()),
                 id: user_id.and_then(|id| id.parse::<u64>().ok()).unwrap_or_default(),
-                html_url: user_url, 
+                html_url: user_url,
             })
         };
         issues.push(issue);
-    } 
+    }
     issues
 }
 
