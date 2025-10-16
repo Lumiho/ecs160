@@ -45,13 +45,13 @@ impl GithubClient {
         let repo_data = repo_api_response.text().await?;
         let temp_repos = build_temp_repo(&repo_data);
         for temp_repo in &temp_repos{
-            let commit_url = temp_repo.commits_url.replace("{/sha}", "?per_page=1");
-            let commit_result = self.get_commits(&commit_url).await;
+            // let commit_url = temp_repo.commits_url.replace("{/sha}", "?per_page=1");
+            // let commit_result = self.get_commits(&commit_url).await;
             let commit_count = self
                 .get_commit_count(&temp_repo.owner.login, &temp_repo.name)
                 .await
                 .unwrap_or(0);
-            println!("Commits: {:?}", commit_result);
+            //println!("Commits: {:?}", commit_result);
             println!("Commit_Count: {:?}", commit_count);
 
         }
