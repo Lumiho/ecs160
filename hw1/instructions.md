@@ -56,12 +56,14 @@ instead of Redis, if you'd like.
         2. id
         3. htmlUrl
         4. site_admin
+
      - **Issue**
         1. title
         2. body
         3. state
         4. createdAt
         5. updatedAt
+        
    - You're welcome to store more fields or fewer, as long as you can still compute the statistics mentioned below.
 
 

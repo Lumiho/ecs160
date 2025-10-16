@@ -25,16 +25,16 @@ pub struct TempRepo
 #[derive(Debug)]
 pub struct FullRepo
 {
-    name: String,
-    owner: Owner,
-    html_url: String,
-    forks_count: u32,
-    language: String,
-    open_issues_count: u32,
-    forks_url: String, // For now, get the urls. We will make a list later.
-    commits_url: String,
-    issues: Vec<Issue>,
-    commit_count: u32
+    pub name: String,
+    pub owner: Owner,
+    pub html_url: String,
+    pub forks_count: u32,
+    pub language: String,
+    pub open_issues_count: u32,
+    pub forks_url: String, // For now, get the urls. We will make a list later.
+    pub commits_url: String,
+    pub issues: Vec<Issue>,
+    pub commit_count: u32
 }
 
 #[derive(Debug)]
