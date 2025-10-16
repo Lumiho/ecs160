@@ -1,4 +1,7 @@
-use crate::github::github_models::Issue;
+use crate::github::github_models::{TempRepo};
+use crate::github::github_client::GithubClient;
+use crate::github::github_parser::{get_values, parse_items};
+use reqwest::Method;
 
 // no serde 😒😒😒. Only need title, body, state, created/updated_at for hw1
 #[derive(Debug, Clone)]
@@ -22,7 +25,19 @@ pub struct Issue
 //     pub html_url: Option<String>,
 // }
 
-pub fn issue_builder(json: &str) -> Vec<Issue>
+// pub async fn attach_issues(client: &GithubClient, repo: &mut TempRepo) -> Result<(), reqwest::Error>
+// {
+//     let issues_url = repo.issues_url.replace("{/number}", "");
+//     let issues_json = client
+//         .call_github_api(&issues_url, Method::GET)
+//         .await?
+//         .text().await?;
+//     let issues = build_issues(&issues_json);
+//     repo.issues = Some(issues);
+//     Ok(())
+// }
+
+pub fn build_issues(json: &str) -> Vec<Issue>
 {
     let mut issues: Vec<Issue> = Vec::new();
 
@@ -61,15 +76,4 @@ pub fn issue_builder(json: &str) -> Vec<Issue>
     issues
 }
 
-pub async fn attach_issues(client: &GithubClient, repo: &mut TempRepo) -> Result<(), reqwest::Error>
-{
-    let issues_url = repo.issues_url.replace("{/number}", "");
-    let issues_json = client
-        .call_github_api(&issues_url, Method::GET)
-        .await?
-        .text().await?;
-    let issues = build_issues(&issues_json);
-    repo.issues = Some(issues);
-    Ok(())
-}
 

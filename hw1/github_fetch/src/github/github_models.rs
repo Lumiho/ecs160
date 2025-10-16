@@ -1,3 +1,4 @@
+use crate::github::github_issues::Issue;
 #[derive(Debug)]
 pub struct TopLevelApiCall
 {
@@ -32,7 +33,7 @@ pub struct FullRepo
     open_issues_count: u32,
     forks_url: String, // For now, get the urls. We will make a list later.
     commits_url: String,
-    issues_url: String,
+    issues: Vec<Issue>,
     commit_count: u32
 }
 
@@ -52,15 +53,15 @@ pub struct Commit
     author: Author
 }
 
-#[derive(Debug)]
-pub struct Issue
-{
-    title: String,
-    body: Option<String>,
-    state: String,
-    createdAt: String,
-    updatedAt: String
-}
+// #[derive(Debug)]
+// pub struct Issue
+// {
+//     title: String,
+//     body: Option<String>,
+//     state: String,
+//     createdAt: String,
+//     updatedAt: String
+// }
 
 #[derive(Debug)]
 pub struct Author

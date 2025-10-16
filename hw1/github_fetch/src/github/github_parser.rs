@@ -66,7 +66,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
 
 // These functions only work for the /search/repositories endpoint to meet the assignment specifications.
 // This function returns the list of items in the items array at the /search/repositories endpoint
-fn parse_items(json: &str) -> Vec<&str> {
+pub fn parse_items(json: &str) -> Vec<&str> {
     let mut items: Vec<&str> = Vec::new();
     let mut start_idx: usize = 0;
     let mut depth: u16 = 0;

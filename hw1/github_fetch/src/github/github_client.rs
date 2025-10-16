@@ -24,7 +24,7 @@ impl GithubClient {
         }
     }
 
-    async fn call_github_api(&self, url: &str, method: Method) -> Result<Response, reqwest::Error>
+    pub async fn call_github_api(&self, url: &str, method: Method) -> Result<Response, reqwest::Error>
     {
         let response = self.client
             .request(method, url)
