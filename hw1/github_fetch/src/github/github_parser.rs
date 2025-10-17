@@ -161,6 +161,10 @@ pub fn get_relative_url(link_header: &str, rel: &str) -> Result<String, String> 
         }
     }
 
+    if temp_url.eq("Error finding url") {
+        return Err(format!("Error finding type {}", rel));
+    }
+
     if let (Some(start), Some(end)) = (temp_url.find('<'), temp_url.find('>')) {
         Ok(temp_url[(start + 1)..end].to_string())
     } else {
@@ -307,7 +311,7 @@ mod tests {
     #[test]
     fn test_get_relative_url() {
         let test_header = r#"<https://api.github.com/repositories/246335987/forks?per_page=100&page=2>; rel="next", <https://api.github.com/repositories/246335987/forks?per_page=100&page=48>; rel="last"#;
-        let test_rel_type = "next";
+        let test_rel_type = "prev";
 
         let expected_output = "https://api.github.com/repositories/246335987/forks?per_page=100&page=2".to_string();
 
