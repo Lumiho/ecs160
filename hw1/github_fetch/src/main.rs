@@ -30,6 +30,8 @@ async fn main()
         let repos_result = github_client.get_top10(url).await;
         let total_stars = client.get_star_total(&repos_result);
 
+        // build full repo
+
         match repos_result
         {
             Ok(temp_repos) =>
