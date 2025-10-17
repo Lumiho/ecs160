@@ -1,4 +1,5 @@
 use crate::github::github_models::{TempRepo, Owner};
+
 pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
     // array of the json items
     let items: Vec<&str> = parse_items(&json);
@@ -145,6 +146,28 @@ pub fn get_values(json: &str, key: &str) -> Option<String> {
 }
 
 
+/// This function returns a url given a rel tag. Designed to work with Link Header Data with format:
+/// Link: <url1>; rel="next", <url2>; rel="prev", <url3>; rel="last"
+/// Example Link Header: <https://api.github.com/repositories/246335987/forks?per_page=100&page=47>; rel="prev"
+/// Example use: get_relative_url(url, "prev") -> "https://api.github.com/repositories/246335987/forks?per_page=100&page=47"
+pub fn get_relative_url(link_header: &str, rel: &str) -> Result<String, String> {
+    let mut temp_url : &str = "Error finding url";
+    let url_substrings: Vec<&str> = link_header.split(",").collect();
+
+    for substring in url_substrings {
+        if substring.contains(rel) {
+            temp_url = substring;
+            break
+        }
+    }
+
+    if let (Some(start), Some(end)) = (temp_url.find('<'), temp_url.find('>')) {
+        Ok(temp_url[(start + 1)..end].to_string())
+    } else {
+        Err(format!("{}", temp_url.to_string()))
+    }
+}
+
 fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{}\":", key);
 
@@ -181,6 +204,8 @@ fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     }
     None
 }
+
+
 
 #[cfg(test)]
 mod tests {
@@ -277,6 +302,19 @@ mod tests {
         for (i, item) in items.iter().enumerate() {
             println!("Item {}: {}", i, item);
         }
+    }
+
+    #[test]
+    fn test_get_relative_url() {
+        let test_header = r#"<https://api.github.com/repositories/246335987/forks?per_page=100&page=2>; rel="next", <https://api.github.com/repositories/246335987/forks?per_page=100&page=48>; rel="last"#;
+        let test_rel_type = "next";
+
+        let expected_output = "https://api.github.com/repositories/246335987/forks?per_page=100&page=2".to_string();
+
+        let test_result = get_relative_url(test_header, test_rel_type);
+
+        println!("{:?}", test_result);
+        assert_eq!(test_result, Ok(expected_output));
     }
 }
 
