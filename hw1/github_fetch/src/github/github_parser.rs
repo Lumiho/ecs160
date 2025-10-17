@@ -24,7 +24,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
         let issues_url = get_values(item, "issues_url");
         let stargazer_count = get_values(item, "stargazer_count");  // stargazer count added 
 
-        let owner = get_nested_block(&item, "owner");
+        let owner = get_owner(&item, "owner");
 
         if owner.is_none() {
             eprintln!("Missing owner block for item:\n{}", item);
@@ -56,7 +56,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
             forks_url: forks_url.unwrap(),
             commits_url: commits_url.unwrap(),
             issues_url: issues_url.unwrap(),
-            stargazer_count: stargazer_count.unwrap(),
+            stargazer_count: stargazer_count.unwrap().parse::<u32>().unwrap(),
         };
         temp_repos.push(built_temp_repo);
     }
@@ -170,7 +170,8 @@ pub fn get_relative_url(link_header: &str, rel: &str) -> Result<String, String> 
     }
 }
 
-fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
+// TODO: Write descriptive comments about get_owner()
+pub fn get_owner<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{}\":", key);
 
     if let Some(key_idx) = json.find(&pattern)
@@ -261,7 +262,7 @@ mod tests {
         }
     }"#;
 
-        let owner_block = get_nested_block(&json, "owner").unwrap();
+        let owner_block = get_owner(&json, "owner").unwrap();
 
         let expected = r#""login": "torvalds",
                             "id": 1024025,

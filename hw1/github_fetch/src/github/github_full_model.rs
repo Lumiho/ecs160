@@ -36,5 +36,6 @@ pub async fn build_full_repo(client: &GithubClient, temp_repo: TempRepo) -> Resu
         commits_url: commits,
         commit_count: 0,
         issues,
+        stargazer_count: repo.stargazer_count,
     })
 }

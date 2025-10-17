@@ -139,9 +139,10 @@ impl GithubClient {
             }
         }
     }
-    pub async get_star_total(&self, temp_repos: &[TempRepo]) -> Result<u32 , reqwest::Error> // take slice, not ownership of Vec<TempRepo>
+
+    pub async fn get_star_total(&self, temp_repos: &[TempRepo]) -> Result<u32, reqwest::Error> // take slice, not ownership of Vec<TempRepo>
     {
-        temp_repos.iter().map(|repo| repo.stargazers_count).sum() 
+        Ok(temp_repos.iter().map(|repo| repo.stargazer_count).sum())
         // Map lets us apply a "function" to all repos with |x| as param -- gets all of their star counts. 
         // more concise than a for loop
     }
