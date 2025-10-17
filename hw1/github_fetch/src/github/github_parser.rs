@@ -146,7 +146,7 @@ pub fn get_values(json: &str, key: &str) -> Option<String> {
 }
 
 
-/// This function returns a url given a rel tag. Designed to work with Link Header Data with format:
+/// This function returns a url given a rel type. Designed to work with Link Header Data with format:
 /// Link: <url1>; rel="next", <url2>; rel="prev", <url3>; rel="last"
 /// Example Link Header: <https://api.github.com/repositories/246335987/forks?per_page=100&page=47>; rel="prev"
 /// Example use: get_relative_url(url, "prev") -> "https://api.github.com/repositories/246335987/forks?per_page=100&page=47"
