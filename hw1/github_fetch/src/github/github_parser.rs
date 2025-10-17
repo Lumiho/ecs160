@@ -22,7 +22,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
         let forks_url = get_values(item, "forks_url");
         let commits_url = get_values(item, "commits_url");
         let issues_url = get_values(item, "issues_url");
-        mut let stargazer_count += get_values(item, "stargazer_count");  // stargazer count added 
+        let stargazer_count = get_values(item, "stargazer_count");  // stargazer count added 
 
         let owner = get_nested_block(&item, "owner");
 

@@ -72,7 +72,6 @@ impl GithubClient {
         let commit_url = format!("https://api.github.com/repos/{}/{}/commits?per_page=1", owner, repo);
         let header_resp = self.call_github_api(&commit_url, Method::HEAD).await;
 
-
         match header_resp {
             Ok(response) => {
                 if let Some(link_header) = response.headers().get(LINK) {
@@ -139,6 +138,12 @@ impl GithubClient {
                 Ok(0)
             }
         }
+    }
+    pub async get_star_total(&self, temp_repos: &[TempRepo]) -> Result<u32 , reqwest::Error> // take slice, not ownership of Vec<TempRepo>
+    {
+        temp_repos.iter().map(|repo| repo.stargazers_count).sum() 
+        // Map lets us apply a "function" to all repos with |x| as param -- gets all of their star counts. 
+        // more concise than a for loop
     }
 }
 // Usage: get_commit_count(temp_repo.owner, temp_repo.repo)

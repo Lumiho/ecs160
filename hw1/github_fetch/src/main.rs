@@ -27,9 +27,10 @@ async fn main()
 
     for url in urls
     {
-        let repo_result = github_client.get_top10(url).await;
+        let repos_result = github_client.get_top10(url).await;
+        let total_stars = client.get_star_total(&repos_result);
 
-        match repo_result
+        match repos_result
         {
             Ok(temp_repos) =>
                 for (i, temp_repo) in temp_repos.iter().enumerate() {
