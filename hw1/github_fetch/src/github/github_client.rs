@@ -17,7 +17,7 @@ pub struct GithubClient
 impl GithubClient {
     pub fn new() -> Self 
     {
-        Self 
+        Self
         {
             client: Client::new(),
             token: std::env::var("GITHUB_TOKEN").expect("Expected GITHUB token in .env")
@@ -53,7 +53,6 @@ impl GithubClient {
                 .unwrap_or(0);
             println!("Commits: {:?}", commit_result);
             println!("Commit_Count: {:?}", commit_count);
-
         }
         Ok(temp_repos)
     }
@@ -116,7 +115,7 @@ impl GithubClient {
 
                 // ---- Fallback if no Link header ----
                 let fallback_url = format!(
-                    "https://api.github.com/repos/{}/{}/commits?per_page=100",
+                    "https://api.github.com/repos/{}/{}/commits?per_page=100", // wait is this suppsoed to be 1
                     owner, repo
                 );
                 let commits_json = self.call_github_api(&fallback_url, Method::GET).await?;

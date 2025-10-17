@@ -21,8 +21,8 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
         let forks_url = get_values(item, "forks_url");
         let commits_url = get_values(item, "commits_url");
         let issues_url = get_values(item, "issues_url");
+        mut let stargazer_count += get_values(item, "stargazer_count");  // stargazer count added 
 
-        // build the owner
         let owner = get_nested_block(&item, "owner");
 
         if owner.is_none() {
@@ -32,7 +32,6 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
         let login = get_values(owner.unwrap_or(""), "login");
         let id = get_values(owner.unwrap_or(""), "id");
         let owner_url = get_values(owner.unwrap_or(""), "html_url");
-
 
         let site_admin = get_values(&owner.unwrap_or(""), "site_admin");
         if site_admin.is_none() {
@@ -56,8 +55,8 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
             forks_url: forks_url.unwrap(),
             commits_url: commits_url.unwrap(),
             issues_url: issues_url.unwrap(),
+            stargazer_count: stargazer_count.unwrap(),
         };
-
         temp_repos.push(built_temp_repo);
     }
     temp_repos
@@ -72,7 +71,6 @@ pub fn parse_items(json: &str) -> Vec<&str> {
     let mut depth: u16 = 0;
     // flag to track whether the parser is in a string or not, so we don't count '{' '}' within strings.
     let mut within_string = false;
-
 
     // Let's go past the '[' character, and on to the first element
     if let Some(array_start_idx) = json.find("[") {

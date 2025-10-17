@@ -1,0 +1,20 @@
+{
+  "total_count": 212345,
+  "incomplete_results": false,
+  "items": 
+  [
+    {
+      "name": "rust",
+      "stargazers_count": 95000,
+      "forks_count": 12800,
+      "language": "Rust",
+      "open_issues_count": 1000
+    },
+    {
+      "name": "tokio",
+      "stargazers_count": 24000,
+      "forks_count": 2100,
+      "language": "Rust",
+      "open_issues_count": 200
+    }]
+}
