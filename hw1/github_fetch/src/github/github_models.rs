@@ -22,6 +22,7 @@ pub struct TempRepo
     pub forks_url: String, // Get the url for now, vectors later
     pub commits_url: String,
     pub issues_url: String,
+    pub stargazer_count: u32, // added stargazer cnt
 }
 
 // We will construct this FullRepo from TempRepo and an api call to get the commit count
@@ -37,7 +38,8 @@ pub struct FullRepo
     pub forks_list: Vec<ForkRepo>, 
     pub commits_url: Vec<Commit>,
     pub issues: Vec<Issue>,
-    pub commit_count: u32
+    pub commit_count: u32,
+    pub stargazer_count: u32,
 }
 
 #[derive(Debug)]
