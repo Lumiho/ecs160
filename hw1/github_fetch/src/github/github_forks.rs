@@ -1,51 +1,90 @@
-use reqwest::Method;
+use reqwest::{get, Method};
+use reqwest::header::HeaderValue;
 use reqwest::header::LINK;
 use crate::github::github_models::Owner;
 use crate::github::github_client::GithubClient;
-//use crate::github::github_parser::get_relative_url;
+use crate::github::github_parser::*;
 
+#[derive(Debug)]
 pub struct ForkRepo {
     name: String,
     owner: Owner,
     html_url: String,
+    created_at: String,
     new_commits: u32,
 }
 
-// This is just a function to test functionality. Will call a build_forks function that uses a github client
-// that exists already in github_full_model
-pub async fn build_forks() -> String//-> Result<ForkRepo, reqwest::Error>
+// This function builds the list of forks for one repository
+// TODO: Get the count of commits since the created_at date
+pub async fn build_forks(client: &GithubClient, url: &str) -> Result<Vec<ForkRepo>, String>
 {
-    let client = GithubClient::new();
-    let url = "https://api.github.com/repos/ventoy/Ventoy/forks?per_page=100&page=1";
-    let mut header_output: String = " ".to_string();
-    // First, we need to determine if a header has a "next" tag
-    // https://api.github.com/repos/{owner}/{repository}/forks?per_page=100&page=1
-    // We'll use this endpoint for testing.: "https://api.github.com/repos/ventoy/Ventoy/forks?per_page=100&page=1"
-    // And we'll get the headers first and find the Link header:
-    // https://api.github.com/repos/ventoy/Ventoy/forks?per_page=100&page=1
-    // <https://api.github.com/repositories/246335987/forks?sort=newest&per_page=20&page=230>; rel="next"
+    // Endpoint used: https://api.github.com/repos/{owner}/{repository}/forks?per_page=100&page=1
+    // First, serialize the first page of forks from json to structs
 
-    let forks_header_response = client.call_github_api(url, Method::HEAD).await;
+    let mut forks: Vec<ForkRepo> = Vec::new();
+    let mut page = 1;
 
-    match(forks_header_response) {
-        Ok(resp) => {
-            if let Some(link_header) = resp.headers().get(LINK) {
-                let header_str = link_header.to_str().unwrap();
-                header_output = header_str.to_string();
-                // We specifically search for "next". If there is no "next" tag, we are at the last page.
-                if header_str.contains("/next/") {
+    // Append these search parameters to the forks endpoint and get the link header to obtain relative types like "next"
+    // Will use "next" to loop through all pages in order to obtain all forks
+    let mut process_url = format!("{}?per_page={}", url, page);
 
+    loop {
+        let fork_items_resp = client.call_github_api(&process_url, Method::GET).await;
+        let mut next: bool = false;
+
+        match(fork_items_resp) {
+
+            Ok(fork_items_body) => {
+                // TODO
+                let link_header = fork_items_body
+                    .headers()
+                    .get("link")
+                    .and_then(|h| h.to_str().ok())
+                    .map(|s| s.to_string())
+                    .unwrap();
+
+                let fork_items_string = fork_items_body.text().await.unwrap();
+                let fork_items = parse_items(&fork_items_string);
+
+                for item in fork_items {
+                    let owner_string = get_owner(&item, "owner").unwrap();
+                    let owner = Owner {
+                        login: get_values(owner_string, "login").unwrap().parse::<String>().unwrap(),
+                        id: get_values(owner_string, "id").unwrap().parse::<u64>().unwrap(),
+                        html_url: get_values(owner_string, "html_url").unwrap().parse::<String>().unwrap(),
+                        site_admin: get_values(owner_string, "site_admin").unwrap().parse::<bool>().unwrap()
+                    };
+
+                    let fork_repo = ForkRepo {
+                        name: get_values(item, "name").unwrap(),
+                        owner: owner,
+                        html_url: get_values(item, "html_url").unwrap(),
+                        created_at: get_values(item, "created_at").unwrap(),
+                        new_commits: 1
+                    };
+
+                    forks.push(fork_repo);
                 }
-                else {
-
+                // Second, we need to determine if a header has a "next" tag
+                // <https://api.github.com/repositories/246335987/forks?sort=newest&per_page=20&page=230>; rel="next"
+                if link_header.contains("next") {
+                    next = true;
+                } else{
+                    next = false;
                 }
-
             }
+            Err(_) => {}
         }
-        Err(e) => {eprintln!("Error getting header: {}", e);}
+
+        // If the next tag exists, go to the next page and update the url
+        if next {
+            page += 1;
+            process_url = get_relative_url(url, "next")?; // handle error later
+        } else {
+            break;
+        }
     }
-    header_output
-    // Parsing logic to find "next"
+    Ok(forks)
 }
 
 #[cfg(test)]
@@ -55,7 +94,6 @@ mod tests {
     #[tokio::test]
     async fn test_build_forks() {
         dotenv().ok();
-        println!("Link Header: {}", build_forks().await);
     }
 }
 

@@ -1,8 +1,9 @@
 use crate::github::github_client::GithubClient;
-use crate::github::github_models::{TempRepo,FullRepo};
+use crate::github::github_models::{TempRepo,FullRepo, Owner};
 use crate::github::github_issues::build_issues;
 use crate::github::github_commits::build_commits;
 use reqwest::Method;
+use crate::github::github_forks::build_forks;
 
 pub async fn build_full_repo(client: &GithubClient, temp_repo: TempRepo) -> Result<FullRepo, reqwest::Error> 
 {
@@ -17,9 +18,12 @@ pub async fn build_full_repo(client: &GithubClient, temp_repo: TempRepo) -> Resu
     let commit_url = repo.commits_url.replace("{/sha}", "?per_page=50");
     let commit_api_response = client.call_github_api(&commit_url, Method::GET).await?;
     let commit_data = commit_api_response.text().await?;
-
+    
+    let mut forks_url = repo.forks_url;
+    
     let commits = build_commits(&commit_data);
     let issues = build_issues(&issues_json);
+    let forks = build_forks(client, &forks_url).await.unwrap(); // Handle Error better later. TOo tired as of now.   
     Ok(FullRepo
     {
         name: repo.name,
@@ -28,7 +32,7 @@ pub async fn build_full_repo(client: &GithubClient, temp_repo: TempRepo) -> Resu
         forks_count: repo.forks_count,
         language: repo.language,
         open_issues_count: repo.open_issues_count,
-        forks_url: repo.forks_url, // For now, get the urls. We will make a list later.
+        forks_list: forks, // For now, get the urls. We will make a list later.
         commits_url: commits,
         commit_count: 0,
         issues,

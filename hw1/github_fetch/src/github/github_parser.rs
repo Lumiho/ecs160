@@ -24,7 +24,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
         let issues_url = get_values(item, "issues_url");
 
         // build the owner
-        let owner = get_nested_block(&item, "owner");
+        let owner = get_owner(&item, "owner");
 
         if owner.is_none() {
             eprintln!("Missing owner block for item:\n{}", item);
@@ -66,7 +66,7 @@ pub fn build_temp_repo(json: &str) -> Vec<TempRepo> {
 
 
 // These functions only work for the /search/repositories endpoint to meet the assignment specifications.
-// This function returns the list of items in the items array at the /search/repositories endpoint
+// This function returns the list of items (repositories) in the items array at the /search/repositories endpoint
 pub fn parse_items(json: &str) -> Vec<&str> {
     let mut items: Vec<&str> = Vec::new();
     let mut start_idx: usize = 0;
@@ -119,6 +119,7 @@ pub fn parse_items(json: &str) -> Vec<&str> {
     items
 }
 
+
 pub fn get_values(json: &str, key: &str) -> Option<String> {
     let pattern = format!("\"{}\":", key);
     if let Some(start_index) = json.find(&pattern)
@@ -162,7 +163,7 @@ pub fn get_relative_url(link_header: &str, rel: &str) -> Result<String, String> 
     }
 
     if temp_url.eq("Error finding url") {
-        return Err(format!("Error finding type {}", rel));
+        return Err(format!("Error finding type: {}", rel));
     }
 
     if let (Some(start), Some(end)) = (temp_url.find('<'), temp_url.find('>')) {
@@ -172,7 +173,8 @@ pub fn get_relative_url(link_header: &str, rel: &str) -> Result<String, String> 
     }
 }
 
-fn get_nested_block<'a>(json: &'a str, key: &str) -> Option<&'a str> {
+
+pub fn get_owner<'a>(json: &'a str, key: &str) -> Option<&'a str> {
     let pattern = format!("\"{}\":", key);
 
     if let Some(key_idx) = json.find(&pattern)
@@ -263,7 +265,7 @@ mod tests {
         }
     }"#;
 
-        let owner_block = get_nested_block(&json, "owner").unwrap();
+        let owner_block = get_owner(&json, "owner").unwrap();
 
         let expected = r#""login": "torvalds",
                             "id": 1024025,

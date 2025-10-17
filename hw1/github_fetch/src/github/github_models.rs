@@ -1,5 +1,7 @@
 use crate::github::github_issues::Issue;
 use crate::github::github_commits::Commit;
+use crate::github::github_forks::ForkRepo;
+
 #[derive(Debug)]
 pub struct TopLevelApiCall
 {
@@ -32,7 +34,7 @@ pub struct FullRepo
     pub forks_count: u32,
     pub language: String,
     pub open_issues_count: u32,
-    pub forks_url: String, // For now, get the urls. We will make a list later.
+    pub forks_list: Vec<ForkRepo>, 
     pub commits_url: Vec<Commit>,
     pub issues: Vec<Issue>,
     pub commit_count: u32
